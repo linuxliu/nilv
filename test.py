@@ -2,6 +2,18 @@
 import requests
 from lxml import etree
 import math
+
+
+def get_luck_flag(luck):
+    if luck == '吉':
+        return 0
+    elif luck == '平':
+        return 1
+    elif luck == '凶':
+        return 2
+    else:
+        return -1
+
 def get_gua(num):
     gua_seq = [0, 63, 29, 46, 5, 40, 47, 61, 4, 8, 7, 56, 16, 2, 55, 59, 25, 38, 15, 60, 26, 22, 62, 31, 24, 6, 30, 33,
                45, 18, 49, 35, 48, 3, 58, 23, 20, 10, 53, 43, 14, 28, 1, 32, 57, 39, 41, 37, 17, 34, 27, 54, 52, 11, 19,
@@ -29,7 +41,7 @@ def get_gua(num):
         # shao_yong_jie = ' '.join(shao_yong_jie)
         # # return (name, words, xiang_words, duan_yi_jie, shao_yong_jie)
         yao = [7, 11, 15, 19, 23, 27]
-        i = 1
+        j = 1
         for i in yao:
             name = tree.xpath('//div[@class="gua_wen"][{0}]/p[2]/b/text()'.format(i))
             name = ''.join(name).strip('。')
@@ -43,9 +55,11 @@ def get_gua(num):
             luck = ''.join(luck).strip('：')
             chang_gua = tree.xpath('//div[@class="gua_wen"][{0}]/p[3]/a/text()'.format(i + 3))
             chang_gua = ''.join(chang_gua)
-            chang_gua = chang_gua.split('第')[]
-            s = "insert into tb_yao(name,diagram_id, inner_seq, words, xiang_words, shaoyong_words, luck, attr, change_id)values({0},{1},{2},{3},{4},{5}, {6}, {7}, {8});".format(name,diagram_id, i, words, xiang_words, shao_yong_jie, luck,  change_id)
-            i+= 1
+            chang_gua = chang_gua.split('第')[1].split('卦')[0]
+            # print(name, words, xiang_words, shao_yong_jie, luck, chang_gua, diagram_id, 0 if name.find('九') != -1 else 1, gua_seq[int(chang_gua) - 1])
+            luck_flag = get_luck_flag(luck)
+            s = "insert into tb_yao(name,diagram_id, inner_seq, words, xiang_words, shaoyong_words, luck, attr, change_id)values('{0}',{1},{2},'{3}','{4}','{5}', {6}, {7}, {8});".format(name,diagram_id, j, words, xiang_words, shao_yong_jie, luck_flag, 0 if name.find('九') != -1 else 1, gua_seq[int(chang_gua) -1])
+            j+= 1
             print(s)
     except Exception as e:
         print(e)
@@ -123,7 +137,9 @@ if __name__ == '__main__':
     #     print(i)
     # for i in range(0, 64):
     #     print('{3}     {0},{1},{2}'.format(get_hu(i),get_cuo(i),get_zong(i), i))
-    get_gua(5738)
+    url_flags = range(5738, 5802)
+    for i in url_flags:
+        get_gua(i)
 
 
 
