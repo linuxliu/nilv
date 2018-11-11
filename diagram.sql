@@ -21,7 +21,7 @@ SET sql_mode='NO_AUTO_VALUE_ON_ZERO';
 DROP TABLE IF EXISTS `tb_normal_diagram`;
 CREATE TABLE `tb_normal_diagram` (
   `id` TINYINT NOT NULL,
-  `name` varchar(1) NOT NULL,
+  `name` varchar(2) NOT NULL,
   `img_url` varchar(128) NOT NULL,
   `words` varchar(128) NOT NULL,
   `xiang_words` varchar(128) NOT NULL,
